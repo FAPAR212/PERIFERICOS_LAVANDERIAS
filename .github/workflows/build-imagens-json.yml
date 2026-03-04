@@ -1,0 +1,52 @@
+name: Build imagens.json
+
+on:
+  push:
+    paths:
+      - "imagem/**"
+      - ".github/workflows/build-imagens-json.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Generate imagens.json
+        run: |
+          set -e
+          mkdir -p imagem
+          python - << 'PY'
+          import os, json
+
+          folder = "imagem"
+          files = []
+          if os.path.isdir(folder):
+              for name in os.listdir(folder):
+                  p = os.path.join(folder, name)
+                  if os.path.isfile(p) and name.lower().endswith(".webp"):
+                      files.append(name)
+
+          files.sort(key=lambda s: s.lower())
+          with open("imagens.json", "w", encoding="utf-8") as f:
+              json.dump(files, f, ensure_ascii=False, indent=2)
+
+          print(f"Gerado imagens.json com {len(files)} itens")
+          PY
+
+      - name: Commit imagens.json if changed
+        run: |
+          if git status --porcelain | grep -q "imagens.json"; then
+            git config user.name "github-actions[bot]"
+            git config user.email "github-actions[bot]@users.noreply.github.com"
+            git add imagens.json
+            git commit -m "Atualiza imagens.json"
+            git push
+          else
+            echo "Sem mudanças em imagens.json"
+          fi
