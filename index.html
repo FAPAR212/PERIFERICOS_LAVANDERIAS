@@ -11,15 +11,13 @@
     input { flex:1; padding:10px 12px; border:1px solid #ddd; border-radius:10px; }
     .grid { display:grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 14px; }
     .card { border:1px solid #e6e6ea; border-radius:14px; overflow:hidden; background:#fff; }
-
-    /* ✅ Correção: imagem é <img> */
     .card img { width:100%; height:170px; object-fit:cover; display:block; background:#f6f6f8; }
-
     .p { padding:12px; }
     .name { font-weight:700; margin:0 0 6px; text-transform: capitalize; }
     .meta { margin:0; color:#444; font-size:13px; }
     .tag { display:inline-block; margin-top:8px; font-size:12px; color:#555; background:#f4f4f6; padding:4px 8px; border-radius:999px; }
     .small { color:#666; font-size:12px; margin-top:6px; }
+    .warn { background:#fff7e6; border:1px solid #ffe0a3; padding:10px 12px; border-radius:10px; margin: 12px 0; color:#444; }
   </style>
 </head>
 <body>
@@ -30,33 +28,21 @@
     <span id="count" class="small"></span>
   </div>
 
+  <div id="msg"></div>
   <div id="grid" class="grid"></div>
 
 <script>
-  const ITEMS = [
-    { nome: "bomba diafragma", imagem: "imagem/bomba_diafragma.webp", categoria: "bombas" },
-    { nome: "bomba dosadora", imagem: "imagem/bomba_dosadora.webp", categoria: "bombas" },
-    { nome: "atuador pneumatico dupla acao", imagem: "imagem/atuador_pneumatico_dupla_acao.webp", categoria: "pneumatica" },
-    { nome: "conector para atuador", imagem: "imagem/conector_para_atuador.webp", categoria: "conexoes" },
-  ];
-
-  const grid = document.getElementById("grid");
-  const q = document.getElementById("q");
+  const grid  = document.getElementById("grid");
+  const q     = document.getElementById("q");
   const count = document.getElementById("count");
+  const msg   = document.getElementById("msg");
 
-  function render(list){
-    grid.innerHTML = list.map(item => `
-      <div class="card">
-        <!-- ✅ Correção: tag <img> -->
-        <img loading="lazy" src="${item.imagem}" alt="${item.nome}">
-        <div class="p">
-          <p class="name">${item.nome}</p>
-          <p class="meta">Arquivo: ${item.imagem.split("/").pop()}</p>
-          <span class="tag">Categoria: ${item.categoria || "—"}</span>
-        </div>
-      </div>
-    `).join("");
-    count.textContent = \`\${list.length} itens\`;
+  let ITEMS = [];
+
+  function prettyNameFromFilename(filename){
+    // remove extensão e troca _ por espaço
+    const base = filename.replace(/\.[^.]+$/, "");
+    return base.replace(/[_-]+/g, " ").trim();
   }
 
   function normalize(s){
@@ -65,16 +51,58 @@
       .normalize("NFD").replace(/[\u0300-\u036f]/g, "");
   }
 
+  function render(list){
+    grid.innerHTML = list.map(item => `
+      <div class="card">
+        <img loading="lazy" src="${item.imagem}" alt="${item.nome}">
+        <div class="p">
+          <p class="name">${item.nome}</p>
+          <p class="meta">Arquivo: ${item.arquivo}</p>
+          <span class="tag">Pasta: imagem/</span>
+        </div>
+      </div>
+    `).join("");
+    count.textContent = `${list.length} itens`;
+  }
+
   function filter(){
     const term = normalize(q.value);
     const list = ITEMS.filter(i =>
-      normalize(i.nome).includes(term) || normalize(i.categoria).includes(term)
+      normalize(i.nome).includes(term) || normalize(i.arquivo).includes(term)
     );
     render(list);
   }
 
+  async function loadItems(){
+    try{
+      // Este arquivo será gerado automaticamente pelo GitHub Actions
+      const res = await fetch("imagens.json", { cache: "no-store" });
+      if(!res.ok) throw new Error("imagens.json não encontrado");
+      const files = await res.json(); // ["bomba_diafragma.webp", ...]
+      ITEMS = (files || [])
+        .filter(f => typeof f === "string" && f.toLowerCase().endsWith(".webp"))
+        .map(f => ({
+          arquivo: f,
+          nome: prettyNameFromFilename(f),
+          imagem: `imagem/${f}`
+        }))
+        .sort((a,b) => a.nome.localeCompare(b.nome, "pt-BR"));
+
+      msg.innerHTML = "";
+      render(ITEMS);
+    } catch(e){
+      msg.innerHTML = `
+        <div class="warn">
+          <b>Não consegui carregar a lista automática.</b><br>
+          Verifique se existe o arquivo <code>imagens.json</code> na raiz do repositório (ele é criado pelo GitHub Actions).
+        </div>`;
+      ITEMS = [];
+      render(ITEMS);
+    }
+  }
+
   q.addEventListener("input", filter);
-  render(ITEMS);
+  loadItems();
 </script>
 </body>
 </html>
