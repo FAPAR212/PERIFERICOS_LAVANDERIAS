@@ -20,7 +20,6 @@ jobs:
       - name: Generate imagens.json
         run: |
           set -e
-          mkdir -p imagem
           python - << 'PY'
           import os, json
 
