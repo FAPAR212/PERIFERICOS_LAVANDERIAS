@@ -40,7 +40,6 @@
   let ITEMS = [];
 
   function prettyNameFromFilename(filename){
-    // remove extensão e troca _ por espaço
     const base = filename.replace(/\.[^.]+$/, "");
     return base.replace(/[_-]+/g, " ").trim();
   }
@@ -75,10 +74,10 @@
 
   async function loadItems(){
     try{
-      // Este arquivo será gerado automaticamente pelo GitHub Actions
       const res = await fetch("imagens.json", { cache: "no-store" });
       if(!res.ok) throw new Error("imagens.json não encontrado");
-      const files = await res.json(); // ["bomba_diafragma.webp", ...]
+      const files = await res.json();
+
       ITEMS = (files || [])
         .filter(f => typeof f === "string" && f.toLowerCase().endsWith(".webp"))
         .map(f => ({
@@ -93,8 +92,8 @@
     } catch(e){
       msg.innerHTML = `
         <div class="warn">
-          <b>Não consegui carregar a lista automática.</b><br>
-          Verifique se existe o arquivo <code>imagens.json</code> na raiz do repositório (ele é criado pelo GitHub Actions).
+          <b>Aguardando o arquivo automático <code>imagens.json</code>.</b><br>
+          Assim que você criar o GitHub Actions (próximo passo), isso se resolve sozinho.
         </div>`;
       ITEMS = [];
       render(ITEMS);
