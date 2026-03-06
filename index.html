@@ -5,31 +5,171 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Periféricos Lavanderias</title>
   <style>
-    body { font-family: Arial, sans-serif; margin: 20px; }
-    h1 { margin: 0 0 8px; }
-    .bar { display:flex; gap:10px; align-items:center; margin: 14px 0 18px; }
-    input { flex:1; padding:10px 12px; border:1px solid #ddd; border-radius:10px; }
-    .grid { display:grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 14px; }
-    .card { border:1px solid #e6e6ea; border-radius:14px; overflow:hidden; background:#fff; }
-    .card img { width:100%; height:170px; object-fit:cover; display:block; background:#f6f6f8; }
-    .p { padding:12px; }
-    .name { font-weight:700; margin:0 0 6px; text-transform: capitalize; }
-    .meta { margin:0; color:#444; font-size:13px; }
-    .tag { display:inline-block; margin-top:8px; font-size:12px; color:#555; background:#f4f4f6; padding:4px 8px; border-radius:999px; }
-    .small { color:#666; font-size:12px; margin-top:6px; }
-    .warn { background:#fff7e6; border:1px solid #ffe0a3; padding:10px 12px; border-radius:10px; margin: 12px 0; color:#444; }
+    :root{
+      --bg:#ffffff;
+      --text:#111;
+      --muted:#555;
+      --border:#e6e6ea;
+      --chip:#f4f4f6;
+      --warnbg:#fff7e6;
+      --warnbd:#ffe0a3;
+    }
+    body{ font-family: Arial, sans-serif; margin: 20px; color:var(--text); background:var(--bg); }
+    h1{ margin: 0 0 10px; }
+    .top{ display:flex; gap:12px; align-items:center; flex-wrap:wrap; margin: 10px 0 16px; }
+    input{
+      flex:1; min-width: 240px;
+      padding:10px 12px; border:1px solid #ddd; border-radius:10px;
+    }
+    .pill{ font-size:12px; color:#333; background:var(--chip); padding:6px 10px; border-radius:999px; }
+    .grid{
+      display:grid;
+      grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+      gap: 14px;
+    }
+    .card{
+      border:1px solid var(--border);
+      border-radius:14px;
+      overflow:hidden;
+      background:#fff;
+      box-shadow: 0 1px 0 rgba(0,0,0,.03);
+    }
+    .thumb{
+      position:relative;
+      width:100%;
+      height:180px;
+      background:#f6f6f8;
+      cursor: zoom-in;
+    }
+    .thumb img{
+      width:100%;
+      height:100%;
+      object-fit:cover;
+      display:block;
+    }
+    .badge{
+      position:absolute;
+      left:10px;
+      top:10px;
+      background: rgba(255,255,255,.9);
+      border:1px solid var(--border);
+      padding:4px 8px;
+      border-radius:999px;
+      font-size:12px;
+      color:#333;
+      backdrop-filter: blur(4px);
+    }
+    .p{ padding:12px; }
+    .name{ font-weight:700; margin:0 0 6px; text-transform: capitalize; }
+    .meta{ margin:0; color:var(--muted); font-size:13px; word-break: break-word; }
+    .actions{
+      display:flex; gap:8px; margin-top:10px; flex-wrap:wrap;
+    }
+    button{
+      border:1px solid var(--border);
+      background:#fff;
+      padding:7px 10px;
+      border-radius:10px;
+      cursor:pointer;
+      font-size:12px;
+    }
+    button:hover{ background:#fafafa; }
+    .warn{
+      background:var(--warnbg);
+      border:1px solid var(--warnbd);
+      padding:10px 12px;
+      border-radius:10px;
+      margin: 12px 0;
+      color:#444;
+    }
+
+    /* Modal (zoom) */
+    .modal{
+      position:fixed; inset:0;
+      background: rgba(0,0,0,.65);
+      display:none;
+      align-items:center;
+      justify-content:center;
+      padding:18px;
+      z-index: 9999;
+    }
+    .modal.open{ display:flex; }
+    .modal-card{
+      background:#fff;
+      border-radius:14px;
+      max-width: 980px;
+      width: 100%;
+      overflow:hidden;
+      border:1px solid rgba(255,255,255,.15);
+    }
+    .modal-img{
+      width:100%;
+      max-height: 75vh;
+      object-fit: contain;
+      display:block;
+      background:#111;
+    }
+    .modal-bar{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:10px;
+      padding:10px 12px;
+      border-top:1px solid var(--border);
+      flex-wrap:wrap;
+    }
+    .modal-title{
+      font-weight:700;
+      text-transform: capitalize;
+    }
+    .toast{
+      position:fixed;
+      bottom:18px;
+      left:50%;
+      transform:translateX(-50%);
+      background:#111;
+      color:#fff;
+      padding:10px 12px;
+      border-radius:12px;
+      font-size:13px;
+      display:none;
+      z-index: 10000;
+    }
+    .toast.show{ display:block; }
   </style>
 </head>
 <body>
   <h1>Lista de Periféricos (com fotos)</h1>
 
-  <div class="bar">
+  <div class="top">
     <input id="q" placeholder="Buscar (ex: bomba, conector, atuador)..." />
-    <span id="count" class="small"></span>
+    <span id="count" class="pill">0 itens</span>
+    <span class="pill">Pasta: <b>imagem/</b></span>
   </div>
 
   <div id="msg"></div>
   <div id="grid" class="grid"></div>
+
+  <!-- Modal -->
+  <div id="modal" class="modal" aria-hidden="true">
+    <div class="modal-card" role="dialog" aria-modal="true">
+      <img id="modalImg" class="modal-img" src="" alt="">
+      <div class="modal-bar">
+        <div>
+          <div id="modalTitle" class="modal-title"></div>
+          <div id="modalMeta" class="meta"></div>
+        </div>
+        <div class="actions">
+          <button id="btnCopyName" type="button">Copiar nome</button>
+          <button id="btnCopyFile" type="button">Copiar arquivo</button>
+          <button id="btnOpenImg" type="button">Abrir imagem</button>
+          <button id="btnClose" type="button">Fechar (Esc)</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="toast" class="toast">Copiado!</div>
 
 <script>
   const grid  = document.getElementById("grid");
@@ -37,7 +177,18 @@
   const count = document.getElementById("count");
   const msg   = document.getElementById("msg");
 
+  const modal = document.getElementById("modal");
+  const modalImg = document.getElementById("modalImg");
+  const modalTitle = document.getElementById("modalTitle");
+  const modalMeta = document.getElementById("modalMeta");
+  const btnClose = document.getElementById("btnClose");
+  const btnCopyName = document.getElementById("btnCopyName");
+  const btnCopyFile = document.getElementById("btnCopyFile");
+  const btnOpenImg = document.getElementById("btnOpenImg");
+  const toast = document.getElementById("toast");
+
   let ITEMS = [];
+  let CURRENT = null;
 
   function prettyNameFromFilename(filename){
     const base = filename.replace(/\.[^.]+$/, "");
@@ -50,14 +201,59 @@
       .normalize("NFD").replace(/[\u0300-\u036f]/g, "");
   }
 
+  function showToast(text="Copiado!"){
+    toast.textContent = text;
+    toast.classList.add("show");
+    clearTimeout(showToast._t);
+    showToast._t = setTimeout(() => toast.classList.remove("show"), 1200);
+  }
+
+  async function copyText(text){
+    try{
+      await navigator.clipboard.writeText(text);
+      showToast("Copiado!");
+    } catch(e){
+      // fallback simples
+      const ta = document.createElement("textarea");
+      ta.value = text;
+      document.body.appendChild(ta);
+      ta.select();
+      document.execCommand("copy");
+      document.body.removeChild(ta);
+      showToast("Copiado!");
+    }
+  }
+
+  function openModal(item){
+    CURRENT = item;
+    modalImg.src = item.imagem;
+    modalImg.alt = item.nome;
+    modalTitle.textContent = item.nome;
+    modalMeta.textContent = `Arquivo: ${item.arquivo}`;
+    modal.classList.add("open");
+    modal.setAttribute("aria-hidden", "false");
+  }
+
+  function closeModal(){
+    modal.classList.remove("open");
+    modal.setAttribute("aria-hidden", "true");
+    CURRENT = null;
+  }
+
   function render(list){
     grid.innerHTML = list.map(item => `
       <div class="card">
-        <img loading="lazy" src="${item.imagem}" alt="${item.nome}">
+        <div class="thumb" data-img="${item.imagem}" data-name="${item.nome}" data-file="${item.arquivo}">
+          <span class="badge">Clique para ampliar</span>
+          <img loading="lazy" src="${item.imagem}" alt="${item.nome}">
+        </div>
         <div class="p">
           <p class="name">${item.nome}</p>
           <p class="meta">Arquivo: ${item.arquivo}</p>
-          <span class="tag">Pasta: imagem/</span>
+          <div class="actions">
+            <button type="button" data-copy="${item.nome}">Copiar nome</button>
+            <button type="button" data-copy="${item.arquivo}">Copiar arquivo</button>
+          </div>
         </div>
       </div>
     `).join("");
@@ -92,15 +288,42 @@
     } catch(e){
       msg.innerHTML = `
         <div class="warn">
-          <b>Aguardando o arquivo automático <code>imagens.json</code>.</b><br>
-          Assim que você criar o GitHub Actions (próximo passo), isso se resolve sozinho.
+          <b>Não consegui carregar <code>imagens.json</code>.</b><br>
+          Se você já criou o GitHub Actions, vá em <b>Actions</b> e rode “Build imagens.json” uma vez.
         </div>`;
       ITEMS = [];
       render(ITEMS);
     }
   }
 
+  // Eventos
   q.addEventListener("input", filter);
+
+  grid.addEventListener("click", (ev) => {
+    const btn = ev.target.closest("button[data-copy]");
+    if(btn){
+      copyText(btn.getAttribute("data-copy"));
+      return;
+    }
+    const thumb = ev.target.closest(".thumb");
+    if(thumb){
+      const item = {
+        imagem: thumb.dataset.img,
+        nome: thumb.dataset.name,
+        arquivo: thumb.dataset.file
+      };
+      openModal(item);
+    }
+  });
+
+  btnClose.addEventListener("click", closeModal);
+  modal.addEventListener("click", (e) => { if(e.target === modal) closeModal(); });
+  document.addEventListener("keydown", (e) => { if(e.key === "Escape") closeModal(); });
+
+  btnCopyName.addEventListener("click", () => CURRENT && copyText(CURRENT.nome));
+  btnCopyFile.addEventListener("click", () => CURRENT && copyText(CURRENT.arquivo));
+  btnOpenImg.addEventListener("click", () => { if(CURRENT) window.open(CURRENT.imagem, "_blank"); });
+
   loadItems();
 </script>
 </body>
