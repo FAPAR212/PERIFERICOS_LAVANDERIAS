@@ -1,6 +1,12 @@
 {
-  "bomba_diafragma.webp": "Usado na linha de dosagem. Conferir vedação antes da instalação.",
-  "bomba_dosadora.webp": "Aplicação principal em sistemas de injeção.",
-  "sensor_fluxo.webp": "Testar leitura após a montagem.",
-  "flauta.webp": "Peça de distribuição. Verificar posição correta de instalação."
+  "atuador_pneumatico.webp": "Descrever aqui observações sobre o atuador pneumático. Ex: curso, aplicação, compatibilidade.",
+  "bomba_0,5cv.webp": "Observações sobre a bomba 0,5cv. Ex: potência, tipo de uso, manutenção recomendada.",
+  "bomba_diafragma.webp": "Usado em sistemas de dosagem. Verificar estado do diafragma antes da instalação.",
+  "bomba_dosadora.webp": "Bomba utilizada para dosagem de produtos químicos. Conferir regulagem de vazão.",
+  "bomba_transferencia.webp": "Utilizada para transferência de líquidos entre reservatórios.",
+  "conector_atuador.webp": "Conector utilizado na ligação do atuador pneumático. Conferir diâmetro e rosca.",
+  "dreno.webp": "Peça de drenagem utilizada em sistemas hidráulicos ou pneumáticos.",
+  "flauta.webp": "Distribuidor de fluxo. Verificar alinhamento e posição correta na instalação.",
+  "selastic.webp": "Material utilizado para vedação ou fixação. Aplicar conforme recomendação do fabricante.",
+  "sensor_fluxo.webp": "Sensor responsável pela leitura de fluxo. Testar funcionamento após instalação."
 }
