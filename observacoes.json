@@ -9,4 +9,8 @@
   "flauta.webp": "Distribuidor de fluxo. Verificar alinhamento e posição correta na instalação.",
   "selastic.webp": "Material utilizado para vedação ou fixação. Aplicar conforme recomendação do fabricante.",
   "sensor_fluxo.webp": "Sensor responsável pela leitura de fluxo. Testar funcionamento após instalação."
+  "placa_desenvolvimento.webp":"18 entradas digitais 24 Vdc optoacopladas 16 saídas digitais a relê NA 5A 
+  02 saídas digitais a mosfet 08 entradas analógicas 0-10v 04 saídas analógicas 0-10V 04 entradas analógicas para PT100
+Interface de comunicação industrial RS232 Interface de comunicação industrial RS485
+Alimentação 24 Vdc, Possui slot para conexão com o módulo controlador ESP32* compatível com a plataforma de programação IDE Arduino",
 }
