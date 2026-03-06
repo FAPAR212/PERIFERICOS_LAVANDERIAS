@@ -6,252 +6,576 @@
   <title>Periféricos Lavanderias</title>
   <style>
     :root{
-      --bg:#ffffff;
-      --text:#111;
-      --muted:#555;
-      --border:#e6e6ea;
-      --chip:#f4f4f6;
-      --warnbg:#fff7e6;
-      --warnbd:#ffe0a3;
+      --bg: #0b1220;
+      --bg-soft: #111827;
+      --card: #172033;
+      --card-2: #1e293b;
+      --text: #f3f4f6;
+      --muted: #94a3b8;
+      --line: #2b3648;
+      --primary: #22c55e;
+      --primary-dark: #16a34a;
+      --chip: #1f2937;
+      --chip-text: #e5e7eb;
+      --warn-bg: #3b2a12;
+      --warn-bd: #a16207;
+      --shadow: 0 18px 40px rgba(0,0,0,.28);
+      --radius: 18px;
     }
+
+    * { box-sizing: border-box; }
+
+    html { scroll-behavior: smooth; }
 
     body{
+      margin:0;
       font-family: Arial, sans-serif;
-      margin: 20px;
+      background:
+        radial-gradient(circle at top left, #13203b 0%, #0b1220 38%),
+        linear-gradient(180deg, #0b1220, #0f172a);
       color: var(--text);
-      background: var(--bg);
     }
 
-    h1{ margin: 0 0 10px; }
+    .wrap{
+      max-width: 1440px;
+      margin: 0 auto;
+      padding: 20px;
+    }
 
-    .top{
+    .topbar{
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      backdrop-filter: blur(10px);
+      background: rgba(11,18,32,.84);
+      border-bottom: 1px solid rgba(43,54,72,.95);
+    }
+
+    .topbar-inner{
+      max-width: 1440px;
+      margin: 0 auto;
+      padding: 16px 20px 18px;
+    }
+
+    .brand{
+      display:flex;
+      align-items:center;
+      gap:16px;
+      margin-bottom: 14px;
+      flex-wrap: wrap;
+    }
+
+    .brand-logo{
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      background: rgba(255,255,255,.04);
+      border:1px solid var(--line);
+      border-radius: 16px;
+      padding: 12px 14px;
+      min-height: 64px;
+    }
+
+    .brand-logo img{
+      height: 42px;
+      width: auto;
+      display:block;
+      max-width: 220px;
+      object-fit: contain;
+      filter: brightness(0) invert(1);
+    }
+
+    .brand-text h1{
+      margin: 0 0 6px;
+      font-size: 34px;
+      line-height: 1.1;
+      letter-spacing: -.02em;
+    }
+
+    .subtitle{
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .toolbar{
       display:flex;
       gap:12px;
       align-items:center;
-      flex-wrap:wrap;
-      margin: 10px 0 16px;
+      flex-wrap: wrap;
     }
 
-    input{
-      flex:1;
-      min-width: 240px;
-      padding:10px 12px;
-      border:1px solid #ddd;
-      border-radius:10px;
+    .search{
+      flex: 1;
+      min-width: 260px;
+      position: relative;
+    }
+
+    .search input{
+      width:100%;
+      padding: 14px 16px;
+      border:1px solid var(--line);
+      border-radius: 14px;
+      background: #0f172a;
+      color: var(--text);
+      font-size:14px;
+      outline:none;
+    }
+
+    .search input::placeholder{
+      color:#7c8ba1;
+    }
+
+    .search input:focus{
+      border-color:#3b82f6;
+      box-shadow: 0 0 0 4px rgba(59,130,246,.14);
     }
 
     .pill{
-      font-size:12px;
-      color:#333;
-      background:var(--chip);
-      padding:6px 10px;
-      border-radius:999px;
+      border:1px solid var(--line);
+      background: var(--chip);
+      color: var(--chip-text);
+      padding: 10px 12px;
+      border-radius: 999px;
+      font-size: 13px;
+      white-space: nowrap;
+    }
+
+    .top-actions{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+    }
+
+    .action-btn{
+      appearance:none;
+      border:none;
+      border-radius: 12px;
+      padding: 12px 14px;
+      font-size: 13px;
+      cursor:pointer;
+      transition: .15s ease;
+      font-weight: 700;
+      letter-spacing: .01em;
+    }
+
+    .action-btn:hover{ transform: translateY(-1px); }
+    .action-btn:active{ transform: scale(.98); }
+
+    .btn-print{
+      background: var(--primary);
+      color: #04120a;
+    }
+
+    .btn-print:hover{
+      background: #34d399;
+    }
+
+    .btn-top{
+      background: #1e293b;
+      color: var(--text);
+      border:1px solid var(--line);
+    }
+
+    .btn-top:hover{
+      background: #253247;
+    }
+
+    .msg{
+      margin: 18px 0 0;
+    }
+
+    .warn{
+      background: var(--warn-bg);
+      border: 1px solid var(--warn-bd);
+      color: #fde68a;
+      padding: 12px 14px;
+      border-radius: 14px;
+      font-size: 14px;
     }
 
     .grid{
       display:grid;
-      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-      gap: 14px;
+      grid-template-columns: repeat(auto-fit, minmax(290px, 1fr));
+      gap: 18px;
+      margin-top: 24px;
     }
 
     .card{
-      border:1px solid var(--border);
-      border-radius:14px;
-      overflow:hidden;
-      background:#fff;
-      box-shadow: 0 1px 0 rgba(0,0,0,.03);
+      background: linear-gradient(180deg, rgba(255,255,255,.02), rgba(255,255,255,.01));
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      overflow: hidden;
+      box-shadow: var(--shadow);
+      transition: transform .15s ease, box-shadow .15s ease, border-color .15s ease;
+    }
+
+    .card:hover{
+      transform: translateY(-3px);
+      box-shadow: 0 22px 45px rgba(0,0,0,.34);
+      border-color: #3a4b66;
     }
 
     .thumb{
-      position:relative;
-      width:100%;
-      height:190px;
-      background:#f6f6f8;
+      position: relative;
+      background: linear-gradient(180deg, #0f172a, #111827);
+      aspect-ratio: 4 / 3;
       cursor: zoom-in;
+      overflow: hidden;
     }
 
     .thumb img{
       width:100%;
       height:100%;
-      object-fit:cover;
+      object-fit: cover;
       display:block;
     }
 
-    .badge{
+    .zoom-badge{
       position:absolute;
-      left:10px;
-      top:10px;
-      background: rgba(255,255,255,.9);
-      border:1px solid var(--border);
-      padding:4px 8px;
+      top:12px;
+      left:12px;
+      background: rgba(15,23,42,.78);
+      color:#f8fafc;
+      border:1px solid rgba(148,163,184,.28);
       border-radius:999px;
+      padding: 7px 10px;
       font-size:12px;
-      color:#333;
+      font-weight:700;
+      box-shadow: 0 4px 12px rgba(0,0,0,.18);
     }
 
-    .p{ padding:12px; }
+    .content{
+      padding: 16px;
+    }
 
     .name{
-      font-weight:700;
-      margin:0 0 6px;
+      margin:0 0 8px;
+      font-size: 18px;
+      line-height: 1.25;
+      font-weight: 700;
       text-transform: capitalize;
     }
 
-    .meta{
+    .file{
       margin:0;
-      color:var(--muted);
+      color: var(--muted);
       font-size:13px;
       word-break: break-word;
     }
 
-    .obs-box{
-      margin-top:10px;
-      padding:10px;
-      border:1px solid #ececf1;
-      border-radius:10px;
-      background:#fafafa;
+    .obs{
+      margin-top: 14px;
+      padding: 12px;
+      border-radius: 14px;
+      background: rgba(255,255,255,.02);
+      border: 1px solid var(--line);
     }
 
     .obs-title{
       font-size:12px;
       font-weight:700;
-      color:#444;
+      letter-spacing:.05em;
+      color:#cbd5e1;
       margin-bottom:6px;
       text-transform: uppercase;
-      letter-spacing: .03em;
     }
 
     .obs-text{
-      margin:0;
-      color:#333;
       font-size:13px;
-      line-height:1.45;
-      white-space:pre-wrap;
+      line-height:1.55;
+      color:#e5e7eb;
+      white-space: pre-wrap;
     }
 
     .actions{
       display:flex;
-      gap:8px;
-      margin-top:10px;
-      flex-wrap:wrap;
+      gap:10px;
+      flex-wrap: wrap;
+      margin-top: 14px;
     }
 
-    button{
-      border:1px solid var(--border);
-      background:#fff;
-      padding:7px 10px;
-      border-radius:10px;
+    button.card-btn{
+      appearance:none;
+      border:none;
+      background:#0f172a;
+      border:1px solid var(--line);
+      color:#f8fafc;
+      border-radius: 12px;
+      padding: 10px 12px;
+      font-size: 13px;
       cursor:pointer;
-      font-size:12px;
+      transition: background .15s ease, transform .15s ease, border-color .15s ease;
     }
 
-    button:hover{ background:#fafafa; }
+    button.card-btn:hover{
+      background:#162235;
+      border-color:#3a4b66;
+    }
 
-    .warn{
-      background:var(--warnbg);
-      border:1px solid var(--warnbd);
-      padding:10px 12px;
-      border-radius:10px;
-      margin: 12px 0;
-      color:#444;
+    button.card-btn:active{
+      transform: scale(.98);
+    }
+
+    .empty{
+      border:1px dashed var(--line);
+      background: rgba(255,255,255,.02);
+      padding: 28px;
+      border-radius: 18px;
+      color: var(--muted);
+      text-align:center;
+      grid-column: 1 / -1;
     }
 
     .modal{
       position:fixed;
       inset:0;
-      background: rgba(0,0,0,.65);
+      background: rgba(2,6,23,.82);
       display:none;
       align-items:center;
       justify-content:center;
-      padding:18px;
-      z-index:9999;
+      padding:20px;
+      z-index:1000;
     }
 
-    .modal.open{ display:flex; }
+    .modal.open{
+      display:flex;
+    }
 
     .modal-card{
-      background:#fff;
-      border-radius:14px;
-      max-width:980px;
-      width:100%;
+      width:min(1120px, 100%);
+      background:#0f172a;
+      border:1px solid var(--line);
+      border-radius: 20px;
       overflow:hidden;
+      box-shadow: 0 30px 80px rgba(0,0,0,.35);
+    }
+
+    .modal-img-wrap{
+      background:#020617;
     }
 
     .modal-img{
       width:100%;
-      max-height:75vh;
-      object-fit:contain;
+      max-height:72vh;
+      object-fit: contain;
       display:block;
-      background:#111;
+      margin:0 auto;
     }
 
-    .modal-bar{
+    .modal-body{
+      padding:16px;
       display:flex;
       justify-content:space-between;
-      align-items:flex-start;
-      gap:12px;
-      padding:12px;
-      border-top:1px solid var(--border);
-      flex-wrap:wrap;
+      gap:18px;
+      flex-wrap: wrap;
+    }
+
+    .modal-info{
+      flex:1;
+      min-width: 260px;
     }
 
     .modal-title{
-      font-weight:700;
-      text-transform:capitalize;
-      margin-bottom:4px;
+      font-size: 22px;
+      font-weight: 700;
+      margin-bottom: 6px;
+      text-transform: capitalize;
+    }
+
+    .modal-file{
+      color: var(--muted);
+      font-size: 14px;
+      margin-bottom: 12px;
+      word-break: break-word;
     }
 
     .modal-obs{
-      margin-top:8px;
-      color:#333;
-      font-size:13px;
-      line-height:1.45;
-      white-space:pre-wrap;
+      border:1px solid var(--line);
+      background: rgba(255,255,255,.02);
+      border-radius: 14px;
+      padding: 12px;
+      font-size: 14px;
+      line-height: 1.55;
+      white-space: pre-wrap;
+      color:#e5e7eb;
+    }
+
+    .modal-actions{
+      display:flex;
+      gap:10px;
+      flex-wrap: wrap;
+      align-items:flex-start;
     }
 
     .toast{
       position:fixed;
-      bottom:18px;
       left:50%;
+      bottom:20px;
       transform:translateX(-50%);
-      background:#111;
-      color:#fff;
-      padding:10px 12px;
-      border-radius:12px;
-      font-size:13px;
+      background:#f8fafc;
+      color:#111827;
+      border-radius: 999px;
+      padding: 10px 14px;
+      font-size: 13px;
       display:none;
-      z-index:10000;
+      z-index:1100;
+      box-shadow: 0 12px 30px rgba(0,0,0,.25);
     }
 
-    .toast.show{ display:block; }
+    .toast.show{
+      display:block;
+    }
+
+    @media print{
+      body{
+        background:#fff;
+        color:#000;
+      }
+
+      .topbar{
+        position: static;
+        background:#fff;
+        border-bottom: 1px solid #ddd;
+      }
+
+      .brand-logo img{
+        filter: none;
+      }
+
+      .search,
+      .top-actions,
+      .actions,
+      .zoom-badge,
+      .modal,
+      .toast{
+        display:none !important;
+      }
+
+      .wrap,
+      .topbar-inner{
+        max-width: none;
+        padding: 12px;
+      }
+
+      .grid{
+        grid-template-columns: repeat(2, 1fr);
+        gap: 12px;
+      }
+
+      .card{
+        box-shadow:none;
+        border:1px solid #ccc;
+        break-inside: avoid;
+        page-break-inside: avoid;
+        background:#fff;
+      }
+
+      .thumb{
+        background:#fff;
+      }
+
+      .obs{
+        background:#fff;
+        border:1px solid #ddd;
+      }
+
+      .name,
+      .obs-text,
+      .obs-title,
+      .file,
+      .subtitle,
+      .pill{
+        color:#000 !important;
+      }
+    }
+
+    @media (max-width: 720px){
+      .brand{
+        align-items:flex-start;
+      }
+
+      .brand-text h1{
+        font-size: 28px;
+      }
+
+      .wrap{
+        padding: 14px;
+      }
+
+      .topbar-inner{
+        padding: 14px;
+      }
+
+      .content,
+      .modal-body{
+        padding: 14px;
+      }
+
+      .brand-logo img{
+        max-width: 170px;
+        height: 34px;
+      }
+    }
   </style>
 </head>
 <body>
-  <h1>Lista de Periféricos (com fotos)</h1>
+  <div class="topbar">
+    <div class="topbar-inner">
+      <div class="brand">
+        <div class="brand-logo">
+          <img
+            src="https://glixquimica.com.br/assets/frontend/images/logo.svg"
+            alt="Logo Glix Química"
+            crossorigin="anonymous"
+          />
+        </div>
 
-  <div class="top">
-    <input id="q" placeholder="Buscar por nome, arquivo ou observação..." />
-    <span id="count" class="pill">0 itens</span>
-    <span class="pill">Pasta: <b>imagem/</b></span>
+        <div class="brand-text">
+          <h1>Lista de Periféricos</h1>
+          <div class="subtitle">Catálogo técnico com fotos, observações e impressão em PDF</div>
+        </div>
+      </div>
+
+      <div class="toolbar">
+        <div class="search">
+          <input id="q" type="text" placeholder="Buscar por nome, arquivo ou observação..." />
+        </div>
+
+        <div id="count" class="pill">0 itens</div>
+        <div class="pill">Pasta: <strong>imagem/</strong></div>
+
+        <div class="top-actions">
+          <button id="btnPrint" class="action-btn btn-print" type="button">Imprimir / PDF</button>
+          <button id="btnTop" class="action-btn btn-top" type="button">Ir para o topo</button>
+        </div>
+      </div>
+
+      <div id="msg" class="msg"></div>
+    </div>
   </div>
 
-  <div id="msg"></div>
-  <div id="grid" class="grid"></div>
+  <div class="wrap">
+    <div id="grid" class="grid"></div>
+  </div>
 
   <div id="modal" class="modal" aria-hidden="true">
-    <div class="modal-card" role="dialog" aria-modal="true">
-      <img id="modalImg" class="modal-img" src="" alt="">
-      <div class="modal-bar">
-        <div>
+    <div class="modal-card">
+      <div class="modal-img-wrap">
+        <img id="modalImg" class="modal-img" src="" alt="">
+      </div>
+
+      <div class="modal-body">
+        <div class="modal-info">
           <div id="modalTitle" class="modal-title"></div>
-          <div id="modalMeta" class="meta"></div>
+          <div id="modalFile" class="modal-file"></div>
           <div id="modalObs" class="modal-obs"></div>
         </div>
-        <div class="actions">
-          <button id="btnCopyName" type="button">Copiar nome</button>
-          <button id="btnCopyFile" type="button">Copiar arquivo</button>
-          <button id="btnOpenImg" type="button">Abrir imagem</button>
-          <button id="btnClose" type="button">Fechar</button>
+
+        <div class="modal-actions">
+          <button id="btnCopyName" class="card-btn" type="button">Copiar nome</button>
+          <button id="btnCopyFile" class="card-btn" type="button">Copiar arquivo</button>
+          <button id="btnOpenImg" class="card-btn" type="button">Abrir imagem</button>
+          <button id="btnClose" class="card-btn" type="button">Fechar</button>
         </div>
       </div>
     </div>
@@ -259,192 +583,241 @@
 
   <div id="toast" class="toast">Copiado!</div>
 
-<script>
-  const grid  = document.getElementById("grid");
-  const q     = document.getElementById("q");
-  const count = document.getElementById("count");
-  const msg   = document.getElementById("msg");
+  <script>
+    const grid = document.getElementById("grid");
+    const q = document.getElementById("q");
+    const count = document.getElementById("count");
+    const msg = document.getElementById("msg");
 
-  const modal = document.getElementById("modal");
-  const modalImg = document.getElementById("modalImg");
-  const modalTitle = document.getElementById("modalTitle");
-  const modalMeta = document.getElementById("modalMeta");
-  const modalObs = document.getElementById("modalObs");
-  const btnClose = document.getElementById("btnClose");
-  const btnCopyName = document.getElementById("btnCopyName");
-  const btnCopyFile = document.getElementById("btnCopyFile");
-  const btnOpenImg = document.getElementById("btnOpenImg");
-  const toast = document.getElementById("toast");
+    const modal = document.getElementById("modal");
+    const modalImg = document.getElementById("modalImg");
+    const modalTitle = document.getElementById("modalTitle");
+    const modalFile = document.getElementById("modalFile");
+    const modalObs = document.getElementById("modalObs");
+    const btnCopyName = document.getElementById("btnCopyName");
+    const btnCopyFile = document.getElementById("btnCopyFile");
+    const btnOpenImg = document.getElementById("btnOpenImg");
+    const btnClose = document.getElementById("btnClose");
+    const btnPrint = document.getElementById("btnPrint");
+    const btnTop = document.getElementById("btnTop");
+    const toast = document.getElementById("toast");
 
-  let ITEMS = [];
-  let OBS = {};
-  let CURRENT = null;
+    let ITEMS = [];
+    let OBS = {};
+    let CURRENT = null;
 
-  function prettyNameFromFilename(filename){
-    const base = filename.replace(/\.[^.]+$/, "");
-    return base.replace(/[_-]+/g, " ").trim();
-  }
-
-  function normalize(s){
-    return (s || "")
-      .toLowerCase()
-      .normalize("NFD")
-      .replace(/[\u0300-\u036f]/g, "");
-  }
-
-  function showToast(text="Copiado!"){
-    toast.textContent = text;
-    toast.classList.add("show");
-    clearTimeout(showToast._t);
-    showToast._t = setTimeout(() => toast.classList.remove("show"), 1200);
-  }
-
-  async function copyText(text){
-    try{
-      await navigator.clipboard.writeText(text);
-      showToast("Copiado!");
-    } catch(e){
-      const ta = document.createElement("textarea");
-      ta.value = text;
-      document.body.appendChild(ta);
-      ta.select();
-      document.execCommand("copy");
-      document.body.removeChild(ta);
-      showToast("Copiado!");
+    function normalize(text){
+      return (text || "")
+        .toLowerCase()
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "");
     }
-  }
 
-  function getObs(filename){
-    return OBS[filename] || "Sem observações.";
-  }
+    function prettyName(filename){
+      return filename
+        .replace(/\.[^.]+$/, "")
+        .replace(/[_-]+/g, " ")
+        .trim();
+    }
 
-  function openModal(item){
-    CURRENT = item;
-    modalImg.src = item.imagem;
-    modalImg.alt = item.nome;
-    modalTitle.textContent = item.nome;
-    modalMeta.textContent = `Arquivo: ${item.arquivo}`;
-    modalObs.textContent = getObs(item.arquivo);
-    modal.classList.add("open");
-    modal.setAttribute("aria-hidden", "false");
-  }
+    function getObs(file){
+      return OBS[file] || "Sem observações.";
+    }
 
-  function closeModal(){
-    modal.classList.remove("open");
-    modal.setAttribute("aria-hidden", "true");
-    CURRENT = null;
-  }
+    function showToast(text){
+      toast.textContent = text;
+      toast.classList.add("show");
+      clearTimeout(showToast._timer);
+      showToast._timer = setTimeout(() => {
+        toast.classList.remove("show");
+      }, 1200);
+    }
 
-  function render(list){
-    grid.innerHTML = list.map(item => `
-      <div class="card">
-        <div class="thumb" data-img="${item.imagem}" data-name="${item.nome}" data-file="${item.arquivo}">
-          <span class="badge">Clique para ampliar</span>
-          <img loading="lazy" src="${item.imagem}" alt="${item.nome}">
-        </div>
-        <div class="p">
-          <p class="name">${item.nome}</p>
-          <p class="meta">Arquivo: ${item.arquivo}</p>
+    async function copyText(text){
+      try{
+        await navigator.clipboard.writeText(text);
+        showToast("Copiado!");
+      } catch(e){
+        const ta = document.createElement("textarea");
+        ta.value = text;
+        document.body.appendChild(ta);
+        ta.select();
+        document.execCommand("copy");
+        document.body.removeChild(ta);
+        showToast("Copiado!");
+      }
+    }
 
-          <div class="obs-box">
-            <div class="obs-title">Observações</div>
-            <p class="obs-text">${getObs(item.arquivo)}</p>
+    function openModal(item){
+      CURRENT = item;
+      modalImg.src = item.imagem;
+      modalImg.alt = item.nome;
+      modalTitle.textContent = item.nome;
+      modalFile.textContent = "Arquivo: " + item.arquivo;
+      modalObs.textContent = getObs(item.arquivo);
+      modal.classList.add("open");
+      modal.setAttribute("aria-hidden", "false");
+    }
+
+    function closeModal(){
+      modal.classList.remove("open");
+      modal.setAttribute("aria-hidden", "true");
+      CURRENT = null;
+    }
+
+    function render(list){
+      if(!list.length){
+        grid.innerHTML = '<div class="empty">Nenhum item encontrado.</div>';
+        count.textContent = "0 itens";
+        return;
+      }
+
+      grid.innerHTML = list.map(item => `
+        <article class="card">
+          <div class="thumb" data-img="${item.imagem}" data-name="${item.nome}" data-file="${item.arquivo}">
+            <div class="zoom-badge">Clique para ampliar</div>
+            <img loading="lazy" src="${item.imagem}" alt="${item.nome}">
           </div>
 
-          <div class="actions">
-            <button type="button" data-copy="${item.nome}">Copiar nome</button>
-            <button type="button" data-copy="${item.arquivo}">Copiar arquivo</button>
+          <div class="content">
+            <h2 class="name">${item.nome}</h2>
+            <p class="file">Arquivo: ${item.arquivo}</p>
+
+            <div class="obs">
+              <div class="obs-title">Observações</div>
+              <div class="obs-text">${getObs(item.arquivo)}</div>
+            </div>
+
+            <div class="actions">
+              <button class="card-btn" type="button" data-copy-name="${item.nome}">Copiar nome</button>
+              <button class="card-btn" type="button" data-copy-file="${item.arquivo}">Copiar arquivo</button>
+            </div>
           </div>
-        </div>
-      </div>
-    `).join("");
+        </article>
+      `).join("");
 
-    count.textContent = `${list.length} itens`;
-  }
-
-  function filter(){
-    const term = normalize(q.value);
-    const list = ITEMS.filter(i =>
-      normalize(i.nome).includes(term) ||
-      normalize(i.arquivo).includes(term) ||
-      normalize(getObs(i.arquivo)).includes(term)
-    );
-    render(list);
-  }
-
-  async function loadObservacoes(){
-    try{
-      const res = await fetch("observacoes.json", { cache: "no-store" });
-      if(!res.ok) return {};
-      return await res.json();
-    } catch(e){
-      return {};
-    }
-  }
-
-  async function loadItems(){
-    try{
-      const [res, obs] = await Promise.all([
-        fetch("imagens.json", { cache: "no-store" }),
-        loadObservacoes()
-      ]);
-
-      OBS = obs || {};
-
-      if(!res.ok) throw new Error("imagens.json não encontrado");
-      const files = await res.json();
-
-      ITEMS = (files || [])
-        .filter(f => typeof f === "string" && f.toLowerCase().endsWith(".webp"))
-        .map(f => ({
-          arquivo: f,
-          nome: prettyNameFromFilename(f),
-          imagem: `imagem/${f}`
-        }))
-        .sort((a,b) => a.nome.localeCompare(b.nome, "pt-BR"));
-
-      msg.innerHTML = "";
-      render(ITEMS);
-    } catch(e){
-      msg.innerHTML = `
-        <div class="warn">
-          <b>Não consegui carregar <code>imagens.json</code>.</b><br>
-          Verifique se o GitHub Actions já gerou esse arquivo.
-        </div>`;
-      ITEMS = [];
-      render(ITEMS);
-    }
-  }
-
-  q.addEventListener("input", filter);
-
-  grid.addEventListener("click", (ev) => {
-    const btn = ev.target.closest("button[data-copy]");
-    if(btn){
-      copyText(btn.getAttribute("data-copy"));
-      return;
+      count.textContent = `${list.length} itens`;
     }
 
-    const thumb = ev.target.closest(".thumb");
-    if(thumb){
-      const item = {
-        imagem: thumb.dataset.img,
-        nome: thumb.dataset.name,
-        arquivo: thumb.dataset.file
-      };
-      openModal(item);
+    function filterItems(){
+      const term = normalize(q.value);
+
+      const filtered = ITEMS.filter(item => {
+        return normalize(item.nome).includes(term) ||
+               normalize(item.arquivo).includes(term) ||
+               normalize(getObs(item.arquivo)).includes(term);
+      });
+
+      render(filtered);
     }
-  });
 
-  btnClose.addEventListener("click", closeModal);
-  modal.addEventListener("click", (e) => { if(e.target === modal) closeModal(); });
-  document.addEventListener("keydown", (e) => { if(e.key === "Escape") closeModal(); });
+    async function loadObservacoes(){
+      try{
+        const res = await fetch("observacoes.json", { cache: "no-store" });
+        if(!res.ok) return {};
+        return await res.json();
+      } catch(e){
+        return {};
+      }
+    }
 
-  btnCopyName.addEventListener("click", () => CURRENT && copyText(CURRENT.nome));
-  btnCopyFile.addEventListener("click", () => CURRENT && copyText(CURRENT.arquivo));
-  btnOpenImg.addEventListener("click", () => { if(CURRENT) window.open(CURRENT.imagem, "_blank"); });
+    async function loadItems(){
+      try{
+        const [imgRes, obsData] = await Promise.all([
+          fetch("imagens.json", { cache: "no-store" }),
+          loadObservacoes()
+        ]);
 
-  loadItems();
-</script>
+        if(!imgRes.ok){
+          throw new Error("imagens.json não encontrado");
+        }
+
+        OBS = obsData || {};
+
+        const files = await imgRes.json();
+
+        ITEMS = (files || [])
+          .filter(file => typeof file === "string" && file.toLowerCase().endsWith(".webp"))
+          .map(file => ({
+            arquivo: file,
+            nome: prettyName(file),
+            imagem: `imagem/${file}`
+          }))
+          .sort((a, b) => a.nome.localeCompare(b.nome, "pt-BR"));
+
+        msg.innerHTML = "";
+        render(ITEMS);
+      } catch(e){
+        msg.innerHTML = `
+          <div class="warn">
+            Não consegui carregar <strong>imagens.json</strong>. Verifique se o arquivo existe e se está com formato válido.
+          </div>
+        `;
+        ITEMS = [];
+        render([]);
+      }
+    }
+
+    q.addEventListener("input", filterItems);
+
+    grid.addEventListener("click", (event) => {
+      const btnName = event.target.closest("[data-copy-name]");
+      if(btnName){
+        copyText(btnName.getAttribute("data-copy-name"));
+        return;
+      }
+
+      const btnFile = event.target.closest("[data-copy-file]");
+      if(btnFile){
+        copyText(btnFile.getAttribute("data-copy-file"));
+        return;
+      }
+
+      const thumb = event.target.closest(".thumb");
+      if(thumb){
+        openModal({
+          imagem: thumb.dataset.img,
+          nome: thumb.dataset.name,
+          arquivo: thumb.dataset.file
+        });
+      }
+    });
+
+    btnCopyName.addEventListener("click", () => {
+      if(CURRENT) copyText(CURRENT.nome);
+    });
+
+    btnCopyFile.addEventListener("click", () => {
+      if(CURRENT) copyText(CURRENT.arquivo);
+    });
+
+    btnOpenImg.addEventListener("click", () => {
+      if(CURRENT) window.open(CURRENT.imagem, "_blank");
+    });
+
+    btnClose.addEventListener("click", closeModal);
+
+    btnPrint.addEventListener("click", () => {
+      window.print();
+    });
+
+    btnTop.addEventListener("click", () => {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    });
+
+    modal.addEventListener("click", (event) => {
+      if(event.target === modal){
+        closeModal();
+      }
+    });
+
+    document.addEventListener("keydown", (event) => {
+      if(event.key === "Escape"){
+        closeModal();
+      }
+    });
+
+    loadItems();
+  </script>
 </body>
 </html>
